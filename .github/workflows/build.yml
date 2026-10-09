@@ -1,29 +1,35 @@
 name: Build Android APK
 
 on:
-  workflow_dispatch:
+workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+build:
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v4
 
-      - name: Build APK
-        uses: love-actions/love-actions-android@v2
-        with:
-          app-name: "My Love Game"
-          bundle-id: "org.example.mylovegame"
-          resource-path: "./assets/android/res"
-          icon-specifier: "@drawable/love"
-          love-ref: "11.5"
-          love-package: "./999-1.love"
-          product-name: "my-love-game"
-          version-string: "1.0.0"
-          version-code: 1
-          output-folder: "./dist"
+  - name: Prepare game files
+    run: |
+      mkdir -p assets/android/res/drawable
+      cp pyp_arena.love 999-1.love
+      echo "Game file prepared"
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: game-apk
-          path: dist/*.apk
+  - name: Build APK
+    uses: love-actions/love-actions-android@v2
+    with:
+      app-name: "My Love Game"
+      bundle-id: "org.example.mylovegame"
+      resource-path: "./assets/android/res"
+      icon-specifier: "@drawable/love"
+      love-ref: "11.5"
+      love-package: "./999-1.love"
+      product-name: "my-love-game"
+      version-string: "1.0.0"
+      version-code: 1
+      output-folder: "./dist"
+
+  - uses: actions/upload-artifact@v4
+    with:
+      name: game-apk
+      path: dist/*.apk
